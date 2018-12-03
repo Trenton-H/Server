@@ -22,7 +22,7 @@ struct lists
 };
 
 char * join(int , int [], clock_t[]);
-char leaveConnection(int, int[], char[], clock_t []);
+void leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
 int logger(int, int[], FILE*);
 void sendLog(int, FILE*);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-void * join(int sd, int AA[], clock_t time[])
+char * join(int sd, int AA[], clock_t time[])
 {
 	int check = -1;
 	for(int i =0; i < 5; i++)
@@ -134,6 +134,7 @@ void * join(int sd, int AA[], clock_t time[])
 		}
 		reply = "$OK";
 	}
+	return reply;
 }
 
 void leaveConnection(int sd, int AA[], char reply[], clock_t timer[])
