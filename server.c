@@ -183,9 +183,9 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				itoa(AA[i], ipAddress, 10);
 				itoa(t, timeStart, 60);
 				strcat(list, "<");
-				strcat(list, (String)AA[i]);
+				strcat(list, idAddress);
 				strcat(list, ", ");
-				strcat(list, (String)t);
+				strcat(list, timeStart);
 				strcat(list, ">\n");
 			}
 		}
@@ -193,7 +193,7 @@ int list(int sd, int AA[], char list[], clock_t time[])
 	return check;
 }
 
-int logger(int sd, int AA[], FILE file_pointer)
+int logger(int sd, int AA[], FILE * file_pointer)
 {
 
 }
