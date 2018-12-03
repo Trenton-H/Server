@@ -25,7 +25,7 @@ void join(int , int [], char[], clock_t[]);
 void leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
 int logger(int, int[], FILE);
-void sendLog(int);
+void sendLog(int, FILE&);
 
 int main(int argc, char *argv[])
 {
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 				 n = write(newsockfd, listReturn, 500); //adjust the size as needed
 		     break;
 	     case 4:
-			 check2 = logger(newsockfd, activeAgents, file_pointer);
+			 check2 = logger(newsockfd, activeAgents, &file_pointer);
 			 if (check2 != -1)
 				 sendLog(newsockfd);
 		     break;
@@ -136,7 +136,7 @@ void join(int sd, int AA[], char reply[], clock_t time[])
 	}
 }
 
-void leaveConnection(int sd, int AA[], char reply[], clock_t time[])
+void leaveConnection(int sd, int AA[], char reply[], clock_t timer[])
 {
 	int check = -1;
 	for (int i = 0; i < 5; i++)
@@ -144,7 +144,7 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t time[])
 		if (AA[i] == sd)
 		{
 			AA[i] = 0;
-			time[i] = time(NULL);
+			timer[i] = time(NULL);
 			reply = "$OK";
 			check = 1;
 			break;
@@ -179,9 +179,9 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
 				strcat(list, "<");
-				strcat(list, AA[i]);
+				strcat(list, (string)AA[i]);
 				strcat(list, ", ");
-				strcat(list, t);
+				strcat(list, (string)t);
 				strcat(list, ">\n");
 			}
 		}
@@ -194,7 +194,7 @@ int logger(int sd, int AA[], FILE file_pointer)
 
 }
 
-void sendLog(int sd)
+void sendLog(int sockfds, FILE * filePointer)
 {
 	int size = 1000;
 	int buff[size];
@@ -206,8 +206,12 @@ void sendLog(int sd)
 		printf("ERROR: File not found.\n");
 	}
 
-	while ((actuallyRead = read("./log.txt", buff, sizeof(buff)) > 0))
-		sendto(sd, buff, actuallyRead, 0);
+	/*while ((actuallyRead = read("./log.txt", buff, sizeof(buff)) > 0))
+		sendto(sd, buff, actuallyRead, 0);*/
+	while ((actuallyRead = read(filePointer, buff, sizeof(buff)) > 0))
+		sendto(sockfds, buff, actuallyRead, 0);
+
+	//send(sockfd, sdbuf, fs_block_sz, 0)
 
 	bzero(buff, sizeof(buff));
 }
