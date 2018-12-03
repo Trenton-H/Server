@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      int n;
 	 int activeAgents[5] = { 0,0,0,0,0 };
-	 char reply[15];
+	 char *reply[16];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
 	 int check1, check2, intSwitchValue = 1;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
 char * join(int sd, int AA[], clock_t time[])
 {
-	char reply[15];
+	char reply[16];
 	int check = -1;
 	for(int i =0; i < 5; i++)
 	{
