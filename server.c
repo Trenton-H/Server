@@ -15,15 +15,16 @@ void error(const char *msg)
     exit(1);
 }
 
-struct connections
+struct lists
 {
-	int sockfd;
-	time_t start_t;
-}
+	int fd;
+	time_t active;
+};
 
-void join(int , int [], char[]);
-void leaveConnection(int, int[], char[]);
-int list(int, int [], char []);
+void join(int , int [], char[], clock_t[]);
+void leaveConnection(int, int[], char[], clock_t []);
+int list(int, int [], char [], clock_t[]);
+int logger(int , int [], char [])
 void sendLog(int);
 
 int main(int argc, char *argv[])
@@ -33,11 +34,13 @@ int main(int argc, char *argv[])
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
-     int activeAgents[5] = {0,0,0,0,0};
+	 int activeAgents[5] = 0,0,0,0,0;
      char reply [15];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
-	 int check 1, check2;
+	 int check1, check2, intSwitchValue = -1;
+	 clock_t time[5];
+	 char listReturn[500];
 
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
@@ -66,25 +69,35 @@ int main(int argc, char *argv[])
      n = read(newsockfd,buffer,15);
      if (n < 0) 
 	     error("ERROR reading from socket");
+
+	 if (buffer == "#JOIN")
+		 intSwitchValue = 1;
+	 else if (buffer == "#LEAVE")
+		 intSwitchValue = 2;
+	 else if (buffer == "#LIST")
+		 intSwitchValue = 3;
+	 else if (buffer == "#LOG")
+		 intSwitchValue = 4;
+
      switch(buffer)
      {
-	     case "#JOIN":
-		     join(newsockfd, activeAgents, reply);
+	     case 1:
+		     join(newsockfd, activeAgents, reply, time);
 			 n = write(newsockfd, reply, 15);
 		     break;
-	     case "#LEAVE":
-			 leaveConnection(newsockfd, activeAgents, reply);
+	     case 2:
+			 leaveConnection(newsockfd, activeAgents, reply, time);
 			 n = write(newsockfd, reply, 15);
 		     break;
-	     case "#List":
-			 check1 = list(newsockfd, activeAgents, list);
+	     case 3:
+			 check1 = list(newsockfd, activeAgents, listReturn, time);
 			 if(check1 != -1)
-				 n = write(newsockfd, list, 15); //adjust the size as needed
+				 n = write(newsockfd, listReturn, 500); //adjust the size as needed
 		     break;
-	     case "#LOG":
-			 check2 = log(newsockfd, activeAgents, log);
+	     case 4:
+			 check2 = logger(newsockfd, activeAgents, log);
 			 if (check2 != -1)
-				 send(newsockfd);
+				 sendLog(newsockfd);
 		     break;
 	     default:
 		     break;
@@ -97,7 +110,7 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-void join(int sd, int AA[], char reply[])
+void join(int sd, int AA[], char reply[], clock_t time[])
 {
 	int check = -1;
 	for(int i =0; i < 5; i++)
@@ -114,6 +127,8 @@ void join(int sd, int AA[], char reply[])
 			if(AA[i] == 0)
 			{
 				AA[i] = sd;
+				time[i] = clock();
+				//snprintf(time[i], sizeof(size[0]), "%d:%d:%d", sTm->tm_hour, sTm->tm_min, sTm->tm_sec);
 				break;
 			}
 		}
@@ -121,7 +136,7 @@ void join(int sd, int AA[], char reply[])
 	}
 }
 
-void leaveConnection(int sd, int AA[], char reply[])
+void leaveConnection(int sd, int AA[], char reply[], clock_t time[])
 {
 	int check = -1;
 	for (int i = 0; i < 5; i++)
@@ -129,6 +144,7 @@ void leaveConnection(int sd, int AA[], char reply[])
 		if (AA[i] == sd)
 		{
 			AA[i] = 0;
+			time[i] = NULL;
 			reply = "$OK";
 			check = 1;
 			break;
@@ -140,21 +156,35 @@ void leaveConnection(int sd, int AA[], char reply[])
 	}
 }
 
-int list(int sd, int AA[], char list[])
+int list(int sd, int AA[], char list[], clock_t time[])
 {
+	list = "";
 	int check = -1;
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
+		{
 			check = 1;
+			break;
+		}
 	}
-	if (check = 1)
+	if (check == 1)
 	{
-
+		for (int i = 0; i < 5; i++)
+		{
+			if (AA[i] != 0)
+			{
+				clock_t t = clock();
+				t = (double)(t - time[i]) / CLOCKS_PER_SEC;
+				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
+				list = stradd("<%s, %s>", AA[i], t);
+			}
+		}
 	}
+	return check;
 }
 
-int log(int sd, int AA[], char log[])
+int logger(int sd, int AA[], char log[])
 {
 
 }
@@ -168,9 +198,11 @@ void sendLog(int sd)
 	FILE *fs = fopen(fsName, "r");
 	if (fs == NULL)
 	{
-		
+		printf("ERROR: File not found.\n");
 	}
 
-	while ((actuallyRead = read("log.txt", buff, sizeof(buff)) > 0))
+	while ((actuallyRead = read("./log.txt", buff, sizeof(buff)) > 0))
 		sendto(sd, buff, actuallyRead, 0);
+
+	bzero(buff);
 }
