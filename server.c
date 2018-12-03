@@ -15,16 +15,16 @@ void error(const char *msg)
     exit(1);
 }
 
-struct connections()
+struct connections
 {
 	int sockfd;
 	time_t start_t;
 }
 
 void join(int , int [], char[]);
-void leave(int, int[]. char[]);
+void leaveConnection(int, int[], char[]);
 int list(int, int [], char []);
-void send(int);
+void sendLog(int);
 
 int main(int argc, char *argv[])
 {
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
      char reply [15];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
+	 int check 1, check2;
 
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
@@ -62,26 +63,26 @@ int main(int argc, char *argv[])
           error("ERROR on accept");
      bzero(buffer,256);
      //reads message from the client
-     n = read(newsockfd,buffer,255);
+     n = read(newsockfd,buffer,15);
      if (n < 0) 
 	     error("ERROR reading from socket");
-     switch(n)
+     switch(buffer)
      {
 	     case "#JOIN":
-		     join(newsockfd, activeAgent, reply);
+		     join(newsockfd, activeAgents, reply);
 			 n = write(newsockfd, reply, 15);
 		     break;
 	     case "#LEAVE":
-			 leave(newsockfd, activeAgent, reply);
+			 leaveConnection(newsockfd, activeAgents, reply);
 			 n = write(newsockfd, reply, 15);
 		     break;
 	     case "#List":
-			 int check1 = list(newsockfd, activeAgent, list);
+			 check1 = list(newsockfd, activeAgents, list);
 			 if(check1 != -1)
 				 n = write(newsockfd, list, 15); //adjust the size as needed
 		     break;
 	     case "#LOG":
-			 int check2 = log(newsockfd, activeAgent, log);
+			 check2 = log(newsockfd, activeAgents, log);
 			 if (check2 != -1)
 				 send(newsockfd);
 		     break;
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-void join(int sd, int AA[], char[] reply)
+void join(int sd, int AA[], char reply[])
 {
 	int check = -1;
 	for(int i =0; i < 5; i++)
@@ -120,7 +121,7 @@ void join(int sd, int AA[], char[] reply)
 	}
 }
 
-void leave(int sd, int AA[]. char[] reply)
+void leaveConnection(int sd, int AA[], char reply[])
 {
 	int check = -1;
 	for (int i = 0; i < 5; i++)
@@ -139,7 +140,7 @@ void leave(int sd, int AA[]. char[] reply)
 	}
 }
 
-int list(int sd, int AA[], char[] list)
+int list(int sd, int AA[], char list[])
 {
 	int check = -1;
 	for (int i = 0; i < 5; i++)
@@ -153,23 +154,23 @@ int list(int sd, int AA[], char[] list)
 	}
 }
 
-int log(int sd, int AA[], char[] log)
+int log(int sd, int AA[], char log[])
 {
 
 }
 
-void send(int sd)
+void sendLog(int sd)
 {
 	int size = 1000;
 	int buff[size];
 	int actuallyRead;
 	char *fsName = "./log.txt";
-	File *fs = fopen(fsName, "r");
+	FILE *fs = fopen(fsName, "r");
 	if (fs == NULL)
 	{
 		
 	}
 
-	while ((actuallyRead = read("log.txt", buff, sizeof(buff)) > 0)
+	while ((actuallyRead = read("log.txt", buff, sizeof(buff)) > 0))
 		sendto(sd, buff, actuallyRead, 0);
 }
