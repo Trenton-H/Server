@@ -7,12 +7,24 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <time.h>
 
 void error(const char *msg)
 {
     perror(msg);
     exit(1);
 }
+
+struct connections()
+{
+	int sockfd;
+	time_t start_t;
+}
+
+void join(int , int [], char[]);
+void leave(int, int[]. char[]);
+int list(int, int [], char []);
+void send(int);
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +33,11 @@ int main(int argc, char *argv[])
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
+     int activeAgents[5] = {0,0,0,0,0};
+     char reply [15];
+	 FILE *file_pointer;
+	 file_pointer = fopen("log.txt", "w");
+
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
          exit(1);
@@ -44,12 +61,115 @@ int main(int argc, char *argv[])
      if (newsockfd < 0) 
           error("ERROR on accept");
      bzero(buffer,256);
+     //reads message from the client
      n = read(newsockfd,buffer,255);
-     if (n < 0) error("ERROR reading from socket");
-     printf("Here is the message: %s\n",buffer);
+     if (n < 0) 
+	     error("ERROR reading from socket");
+     switch(n)
+     {
+	     case "#JOIN":
+		     join(newsockfd, activeAgent, reply);
+			 n = write(newsockfd, reply, 15);
+		     break;
+	     case "#LEAVE":
+			 leave(newsockfd, activeAgent, reply);
+			 n = write(newsockfd, reply, 15);
+		     break;
+	     case "#List":
+			 int check1 = list(newsockfd, activeAgent, list);
+			 if(check1 != -1)
+				 n = write(newsockfd, list, 15); //adjust the size as needed
+		     break;
+	     case "#LOG":
+			 int check2 = log(newsockfd, activeAgent, log);
+			 if (check2 != -1)
+				 send(newsockfd);
+		     break;
+	     default:
+		     break;
+     }
+     //printf("Here is the message: %s\n",buffer);
      n = write(newsockfd,"I got your message",18);
      if (n < 0) error("ERROR writing to socket");
      close(newsockfd);
      close(sockfd);
      return 0; 
+}
+
+void join(int sd, int AA[], char[] reply)
+{
+	int check = -1;
+	for(int i =0; i < 5; i++)
+	{
+		if(AA[i] == sd)
+			check = 1;
+	}
+	if(check == 1)
+		reply = "$ALREADY MEMBER";
+	else
+	{
+		for(int i=0; i < 5; i++)
+		{
+			if(AA[i] == 0)
+			{
+				AA[i] = sd;
+				break;
+			}
+		}
+		reply = "$OK";
+	}
+}
+
+void leave(int sd, int AA[]. char[] reply)
+{
+	int check = -1;
+	for (int i = 0; i < 5; i++)
+	{
+		if (AA[i] == sd)
+		{
+			AA[i] = 0;
+			reply = "$OK";
+			check = 1;
+			break;
+		}
+	}
+	if (check == -1)
+	{
+		reply = "$NOT MEMBER";
+	}
+}
+
+int list(int sd, int AA[], char[] list)
+{
+	int check = -1;
+	for (int i = 0; i < 5; i++)
+	{
+		if (AA[i] == sd)
+			check = 1;
+	}
+	if (check = 1)
+	{
+
+	}
+}
+
+int log(int sd, int AA[], char[] log)
+{
+
+}
+
+void send(int sd)
+{
+	int size = 1000;
+	int buff[size];
+	int actuallyRead;
+	char *fsName = "./log.txt";
+	File *fs = fopen(fsName, "r");
+	if (fs == NULL)
+	{
+		
+	}
+
+	while ((actuallyRead = read("log.txt", buff, sizeof(buff)) > 0)
+		sendto(sd, buff, actuallyRead, 0);
 }
