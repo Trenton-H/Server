@@ -24,7 +24,7 @@ struct lists
 void join(int , int [], char[], clock_t[]);
 void leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
-int logger(int, int[], FILE);
+int logger(int, int[], FILE*);
 void sendLog(int, FILE*);
 
 int main(int argc, char *argv[])
@@ -95,9 +95,9 @@ int main(int argc, char *argv[])
 				 n = write(newsockfd, listReturn, 500); //adjust the size as needed
 		     break;
 	     case 4:
-			 check2 = logger(newsockfd, activeAgents, &file_pointer);
+			 check2 = logger(newsockfd, activeAgents, file_pointer);
 			 if (check2 != -1)
-				 sendLog(newsockfd, &file_pointer);
+				 sendLog(newsockfd, file_pointer);
 		     break;
 	     default:
 		     break;
@@ -160,6 +160,8 @@ int list(int sd, int AA[], char list[], clock_t time[])
 {
 	list = "";
 	int check = -1;
+	char ipAddress[5];
+	char timeStart[5];
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
@@ -178,6 +180,8 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				t = (double)(t - time[i]) / CLOCKS_PER_SEC;
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
+				itoa(AA[i], ipAddress, 10);
+				itoa(t, timeStart, 60);
 				strcat(list, "<");
 				strcat(list, (String)AA[i]);
 				strcat(list, ", ");
@@ -209,7 +213,7 @@ void sendLog(int sockfds, FILE * filePointer)
 	/*while ((actuallyRead = read("./log.txt", buff, sizeof(buff)) > 0))
 		sendto(sd, buff, actuallyRead, 0);*/
 	while ((actuallyRead = fread(buff, sizeof(char), size, filePointer) > 0))
-		sendto(sockfds, buff, actuallyRead, 0);
+		send(sockfds, buff, actuallyRead, 0);
 
 	//send(sockfd, sdbuf, fs_block_sz, 0)
 
