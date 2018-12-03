@@ -21,8 +21,8 @@ struct lists
 	time_t active;
 };
 
-void join(int , int [], char[], clock_t[]);
-void leaveConnection(int, int[], char[], clock_t []);
+char * join(int , int [], clock_t[]);
+char leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
 int logger(int, int[], FILE*);
 void sendLog(int, FILE*);
@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      int n;
 	 int activeAgents[5] = { 0,0,0,0,0 };
-     char reply [15];
+	 char reply[15];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
-	 int check1, check2, intSwitchValue = -1;
+	 int check1, check2, intSwitchValue = 1;
 	 clock_t time[5];
 	 char listReturn[500];
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
      switch(intSwitchValue)
      {
 	     case 1:
-		     join(newsockfd, activeAgents, reply, time);
+		     *reply = join(newsockfd, activeAgents, time);
 			 n = write(newsockfd, reply, 15);
 		     break;
 	     case 2:
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-void join(int sd, int AA[], char reply[], clock_t time[])
+void * join(int sd, int AA[], clock_t time[])
 {
 	int check = -1;
 	for(int i =0; i < 5; i++)
