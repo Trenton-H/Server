@@ -24,7 +24,7 @@ struct lists
 void join(int , int [], char[], clock_t[]);
 void leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
-int logger(int , int [], char [])
+int logger(int, int[], FILE);
 void sendLog(int);
 
 int main(int argc, char *argv[])
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
-	 int activeAgents[5] = 0,0,0,0,0;
+	 int activeAgents[5] = { 0,0,0,0,0 };
      char reply [15];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	 else if (buffer == "#LOG")
 		 intSwitchValue = 4;
 
-     switch(buffer)
+     switch(intSwitchValue)
      {
 	     case 1:
 		     join(newsockfd, activeAgents, reply, time);
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 				 n = write(newsockfd, listReturn, 500); //adjust the size as needed
 		     break;
 	     case 4:
-			 check2 = logger(newsockfd, activeAgents, log);
+			 check2 = logger(newsockfd, activeAgents, file_pointer);
 			 if (check2 != -1)
 				 sendLog(newsockfd);
 		     break;
@@ -144,7 +144,7 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t time[])
 		if (AA[i] == sd)
 		{
 			AA[i] = 0;
-			time[i] = NULL;
+			time[i] = time(NULL);
 			reply = "$OK";
 			check = 1;
 			break;
@@ -177,14 +177,19 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				clock_t t = clock();
 				t = (double)(t - time[i]) / CLOCKS_PER_SEC;
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
-				list = stradd("<%s, %s>", AA[i], t);
+				//list = stradd("<%s, %s>", AA[i], t);
+				strcat(list, "<");
+				strcat(list, AA[i]);
+				strcat(list, ", ");
+				strcat(list, t);
+				strcat(list, ">\n");
 			}
 		}
 	}
 	return check;
 }
 
-int logger(int sd, int AA[], char log[])
+int logger(int sd, int AA[], FILE file_pointer)
 {
 
 }
@@ -204,5 +209,5 @@ void sendLog(int sd)
 	while ((actuallyRead = read("./log.txt", buff, sizeof(buff)) > 0))
 		sendto(sd, buff, actuallyRead, 0);
 
-	bzero(buff);
+	bzero(buff, sizeof(buff));
 }
