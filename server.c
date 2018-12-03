@@ -181,8 +181,10 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
 				temp = AA[i];
-				itoa(temp, ipAddress, 10);
-				itoa(t, timeStart, 60);
+				//itoa(temp, ipAddress, 10);
+				snprintf(ipAddress, 10, "%d", temp);
+				//itoa(t, timeStart, 60);
+				snprintf(timeStart, 60, "%d", t);
 				strcat(list, "<");
 				strcat(list, ipAddress);
 				strcat(list, ", ");
