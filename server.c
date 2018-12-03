@@ -159,7 +159,7 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t timer[])
 int list(int sd, int AA[], char list[], clock_t time[])
 {
 	list = "";
-	int check = -1;
+	int check = -1, temp;
 	char ipAddress[5];
 	char timeStart[5];
 	for (int i = 0; i < 5; i++)
@@ -180,10 +180,11 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				t = (double)(t - time[i]) / CLOCKS_PER_SEC;
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
-				itoa(AA[i], ipAddress, 10);
+				temp = AA[i];
+				itoa(temp, ipAddress, 10);
 				itoa(t, timeStart, 60);
 				strcat(list, "<");
-				strcat(list, idAddress);
+				strcat(list, ipAddress);
 				strcat(list, ", ");
 				strcat(list, timeStart);
 				strcat(list, ">\n");
