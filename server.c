@@ -70,13 +70,13 @@ int main(int argc, char *argv[])
      if (n < 0) 
 	     error("ERROR reading from socket");
 
-	 if (buffer == "#JOIN")
+	 if (buffer == "JOIN")
 		 intSwitchValue = 1;
-	 else if (buffer == "#LEAVE")
+	 else if (buffer == "LEAVE")
 		 intSwitchValue = 2;
-	 else if (buffer == "#LIST")
+	 else if (buffer == "LIST")
 		 intSwitchValue = 3;
-	 else if (buffer == "#LOG")
+	 else if (buffer == "LOG")
 		 intSwitchValue = 4;
 
      switch(intSwitchValue)
@@ -184,7 +184,7 @@ int list(int sd, int AA[], char list[], clock_t time[])
 				//itoa(temp, ipAddress, 10);
 				snprintf(ipAddress, 10, "%d", temp);
 				//itoa(t, timeStart, 60);
-				snprintf(timeStart, 60, "%d", t);
+				snprintf(timeStart, 60, "%ld", t);
 				strcat(list, "<");
 				strcat(list, ipAddress);
 				strcat(list, ", ");
