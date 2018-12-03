@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
      switch(intSwitchValue)
      {
 	     case 1:
-		     *reply = join(newsockfd, activeAgents, time);
+		     //reply = join(newsockfd, activeAgents, time);
+			 strcpy(reply, join(newsockfd, activeAgents, time));
 			 n = write(newsockfd, reply, 15);
 		     break;
 	     case 2:
@@ -112,14 +113,16 @@ int main(int argc, char *argv[])
 
 char * join(int sd, int AA[], clock_t time[])
 {
+	char reply[15];
 	int check = -1;
 	for(int i =0; i < 5; i++)
 	{
 		if(AA[i] == sd)
 			check = 1;
 	}
-	if(check == 1)
-		reply = "$ALREADY MEMBER";
+	if (check == 1)
+		//reply = "$ALREADY MEMBER";
+		strcpy(reply, "$ALREADY MEMBER");
 	else
 	{
 		for(int i=0; i < 5; i++)
@@ -128,11 +131,11 @@ char * join(int sd, int AA[], clock_t time[])
 			{
 				AA[i] = sd;
 				time[i] = clock();
-				//snprintf(time[i], sizeof(size[0]), "%d:%d:%d", sTm->tm_hour, sTm->tm_min, sTm->tm_sec);
 				break;
 			}
 		}
-		reply = "$OK";
+		//reply = "$OK";
+		strcpy(reply, "$OK");
 	}
 	return reply;
 }
