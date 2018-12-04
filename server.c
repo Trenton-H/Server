@@ -58,15 +58,17 @@ int main(int argc, char *argv[])
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
      listen(sockfd,5);
-     clilen = sizeof(cli_addr);
 
 	 while (1)
 	 {
-		 newsockfd = accept(sockfd,
+		clilen = sizeof(cli_addr);
+		newsockfd = accept(sockfd,
 			 (struct sockaddr *) &cli_addr,
 			 &clilen);
-		 if (newsockfd < 0)
-			 error("ERROR on accept");
+		if (newsockfd < 0) {
+			error("ERROR on accept");
+			printf("%s \n\n", newsockfd);
+		}
 		 bzero(buffer, 256);
 		 //reads message from the client
 		 n = read(newsockfd, buffer, 100);
