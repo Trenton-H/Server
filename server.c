@@ -161,14 +161,14 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t timer[])
 		{
 			AA[i] = 0;
 			timer[i] = time(NULL);
-			reply = "$OK";
+			strcpy(reply, "$OK");
 			check = 1;
 			break;
 		}
 	}
 	if (check == -1)
 	{
-		reply = "$NOT MEMBER";
+		strcpy(reply, "$NOT MEMBER");
 	}
 }
 
