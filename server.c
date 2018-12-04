@@ -59,55 +59,59 @@ int main(int argc, char *argv[])
               error("ERROR on binding");
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
-     bzero(buffer,256);
-     //reads message from the client
-     n = read(newsockfd,buffer,15);
-     if (n < 0) 
-	     error("ERROR reading from socket");
 
-	 if (strcmp(buffer, "JOIN"))
-		 intSwitchValue = 1;
-	 else if (strcmp(buffer, "LEAVE"))
-		 intSwitchValue = 2;
-	 else if (strcmp(buffer, "LIST"))
-		 intSwitchValue = 3;
-	 else if (strcmp(buffer, "LOG"))
-		 intSwitchValue = 4;
+	 while (1)
+	 {
+		 newsockfd = accept(sockfd,
+			 (struct sockaddr *) &cli_addr,
+			 &clilen);
+		 if (newsockfd < 0)
+			 error("ERROR on accept");
+		 bzero(buffer, 256);
+		 //reads message from the client
+		 n = read(newsockfd, buffer, 100);
+		 if (n < 0)
+			 error("ERROR reading from socket");
 
-     switch(intSwitchValue)
-     {
-	     case 1:
-		     join(newsockfd, activeAgents, time, reply);
+		 if ((strcmp(buffer, "JOIN")) == 0)
+			 intSwitchValue = 1;
+		 else if ((strcmp(buffer, "LEAVE")) == 0)
+			 intSwitchValue = 2;
+		 else if ((strcmp(buffer, "LIST")) == 0)
+			 intSwitchValue = 3;
+		 else if ((strcmp(buffer, "LOG")) == 0)
+			 intSwitchValue = 4;
+
+		 switch (intSwitchValue)
+		 {
+		 case 1:
+			 join(newsockfd, activeAgents, time, reply);
 			 //strcpy(reply, join(newsockfd, activeAgents, time));
 			 n = write(newsockfd, reply, 15);
-		     break;
-	     case 2:
+			 break;
+		 case 2:
 			 leaveConnection(newsockfd, activeAgents, reply, time);
 			 n = write(newsockfd, reply, 15);
-		     break;
-	     case 3:
+			 break;
+		 case 3:
 			 check1 = list(newsockfd, activeAgents, listReturn, time);
-			 if(check1 != -1)
+			 if (check1 != -1)
 				 n = write(newsockfd, listReturn, 500); //adjust the size as needed
-		     break;
-	     case 4:
+			 break;
+		 case 4:
 			 check2 = logger(newsockfd, activeAgents, file_pointer);
 			 if (check2 != -1)
 				 sendLog(newsockfd, file_pointer);
-		     break;
-	     default:
-		     break;
-     }
-     //printf("Here is the message: %s\n",buffer);
-     //n = write(newsockfd,"I got your message",18);
-     if (n < 0) error("ERROR writing to socket");
-     close(newsockfd);
-     close(sockfd);
+			 break;
+		 default:
+			 break;
+		 }
+		 //printf("Here is the message: %s\n",buffer);
+		 //n = write(newsockfd,"I got your message",18);
+		 if (n < 0) error("ERROR writing to socket");
+		 close(newsockfd);
+		 close(sockfd);
+	 }
      return 0; 
 }
 
@@ -121,7 +125,6 @@ void join(int sd, int AA[], clock_t time[], char reply[])
 			check = 1;
 	}
 	if (check == 1)
-		//reply = "$ALREADY MEMBER";
 		strcpy(reply, "$ALREADY MEMBER");
 	else
 	{
@@ -134,7 +137,6 @@ void join(int sd, int AA[], clock_t time[], char reply[])
 				break;
 			}
 		}
-		//reply = "$OK";
 		strcpy(reply, "$OK");
 	}
 }
