@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
 			 intSwitchValue = 4;
 		 }
 
+		 printf("%i \n\n", intSwitchValue);
+
 		 switch (intSwitchValue)
 		 {
 		 case 1:
