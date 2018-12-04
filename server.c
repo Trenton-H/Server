@@ -21,7 +21,7 @@ struct lists
 	time_t active;
 };
 
-char * join(int , int [], clock_t[]);
+void join(int , int [], clock_t[], char []);
 void leaveConnection(int, int[], char[], clock_t []);
 int list(int, int [], char [], clock_t[]);
 int logger(int, int[], FILE*);
@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
      switch(intSwitchValue)
      {
 	     case 1:
-		     //reply = join(newsockfd, activeAgents, time);
-			 strcpy(reply, join(newsockfd, activeAgents, time));
+		     join(newsockfd, activeAgents, time, reply);
+			 //strcpy(reply, join(newsockfd, activeAgents, time));
 			 n = write(newsockfd, reply, 15);
 		     break;
 	     case 2:
@@ -111,9 +111,9 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-char * join(int sd, int AA[], clock_t time[])
+void join(int sd, int AA[], clock_t time[], char reply[])
 {
-	char reply[16];
+	//char reply[16];
 	int check = -1;
 	for(int i =0; i < 5; i++)
 	{
@@ -137,7 +137,6 @@ char * join(int sd, int AA[], clock_t time[])
 		//reply = "$OK";
 		strcpy(reply, "$OK");
 	}
-	return reply;
 }
 
 void leaveConnection(int sd, int AA[], char reply[], clock_t timer[])
