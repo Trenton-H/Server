@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
               error("ERROR on binding");
      listen(sockfd,5);
 
+	 while (1)
+	 {
 	 
 		clilen = sizeof(cli_addr);
 		newsockfd = accept(sockfd,
@@ -70,8 +72,7 @@ int main(int argc, char *argv[])
 			
 		}
 
-	while (1)
-	{
+	
 		 bzero(buffer, 256);
 		 //reads message from the client
 		 n = read(newsockfd, buffer, 100);
@@ -119,9 +120,9 @@ int main(int argc, char *argv[])
 		 //n = write(newsockfd,"I got your message",18);
 		 if (n < 0) 
 			 error("ERROR writing to socket");
-		 close(newsockfd);	 
+		  
 	 }
-	
+	close(newsockfd);
 	close(sockfd);
      return 0; 
 }
