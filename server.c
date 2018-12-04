@@ -298,6 +298,7 @@ int logger(int sd, int AA[], FILE * file_pointer)
 	char logging[100];
 	strcpy(logging, "");
 
+
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
