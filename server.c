@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      int n;
 	 int activeAgents[5] = { 0,0,0,0,0 };
-	 char *reply[16];
+	 char reply[16];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
 	 int check1, check2, intSwitchValue = 1;
@@ -70,13 +70,13 @@ int main(int argc, char *argv[])
      if (n < 0) 
 	     error("ERROR reading from socket");
 
-	 if (buffer == "JOIN")
+	 if (strcmp(buffer, "#JOIN"))
 		 intSwitchValue = 1;
-	 else if (buffer == "LEAVE")
+	 else if (strcmp(buffer, "#LEAVE"))
 		 intSwitchValue = 2;
-	 else if (buffer == "LIST")
+	 else if (strcmp(buffer, "#LIST"))
 		 intSwitchValue = 3;
-	 else if (buffer == "LOG")
+	 else if (strcmp(buffer, "#LOG"))
 		 intSwitchValue = 4;
 
      switch(intSwitchValue)
