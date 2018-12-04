@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
      return 0; 
 }
 
-void join(int sd, int AA[], clock_t time[], char reply[], FILE * filePointer)
+void join(int sd, int AA[], clock_t timer[], char reply[], FILE * filePointer)
 {
 	//char reply[16];
 	int check = -1;
@@ -134,9 +134,14 @@ void join(int sd, int AA[], clock_t time[], char reply[], FILE * filePointer)
 	struct tm *mytime;// = localtime(&now);
 	time(&now);
 	mytime = localtime(&now);
+	char logging[100];
+	strcpy(logging, "");
 
-	fprintf(filePointer, "%s: Received a JOIN action from agent %i\n", asctime(mytime), sd);
-
+	//fprintf(filePointer, "%s: Received a JOIN action from agent %i\n", asctime(mytime), sd);
+	strcat(logging, "%s", asctime(mytime));
+	strcat(logging, ": Received a JOIN action from agent ");
+	strcat(logging, "%i\n", sd);
+	fprintf(filePointer, logging);
 	for(int i =0; i < 5; i++)
 	{
 		if(AA[i] == sd)
@@ -145,7 +150,12 @@ void join(int sd, int AA[], clock_t time[], char reply[], FILE * filePointer)
 	if (check == 1)
 	{
 		strcpy(reply, "$ALREADY MEMBER");
-		fprintf(filePointer, "%s: Responded to agent %i with $ALREADY MEMBER\n", asctime(mytime), sd);
+		//fprintf(filePointer, "%s: Responded to agent %i with $ALREADY MEMBER\n", asctime(mytime), sd);
+		strcat(logging, "%s", asctime(mytime));
+		strcat(logging, ": Responded to agent ");
+		strcat(logging, "%i", sd);
+		strcat(logging, " with $ALREADY MEMBER\n");
+		fprintf(filePointer, logging);
 	}
 	else
 	{
@@ -154,13 +164,23 @@ void join(int sd, int AA[], clock_t time[], char reply[], FILE * filePointer)
 			if(AA[i] == 0)
 			{
 				AA[i] = sd;
-				time[i] = clock();
-				fprintf(filePointer, "%s: Added agent %i to active list\n", asctime(mytime), sd);
+				timer[i] = clock();
+				//fprintf(filePointer, "%s: Added agent %i to active list\n", asctime(mytime), sd);
+				strcat(logging, "%s", asctime(mytime));
+				strcat(logging, ": Added agent ");
+				strcat(logging, "%i", sd);
+				strcat(logging, " to active list\n");
+				fprintf(filePointer, logging);
 				break;
 			}
 		}
 		strcpy(reply, "$OK");
-		fprintf(filePointer, "%s: Respond to active agent %i with $OK\n", asctime(mytime), sd);
+		//fprintf(filePointer, "%s: Respond to active agent %i with $OK\n", asctime(mytime), sd);
+		strcat(logging, "%s", asctime(mytime));
+		strcat(logging, ": Responded to active agent ");
+		strcat(logging, "%i", sd);
+		strcat(logging, " with $OK \n");
+		fprintf(filePointer, logging);
 	}
 }
 
@@ -171,7 +191,14 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t timer[], FILE * fil
 	struct tm *mytime;// = localtime(&now);
 	time(&now);
 	mytime = localtime(&now);
-	fprintf(filePointer, "%s: Received a LEAVE action from agent %i\n", asctime(mytime), sd);
+	char logging[100];
+	strcpy(logging, "");
+
+	//fprintf(filePointer, "%s: Received a LEAVE action from agent %i\n", asctime(mytime), sd);
+	strcat(logging, "%s", asctime(mytime));
+	strcat(logging, ": Received a LEAVE action from agent ");
+	strcat(logging, "%i\n", sd);
+	fprintf(filePointer, logging);
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
@@ -180,20 +207,32 @@ void leaveConnection(int sd, int AA[], char reply[], clock_t timer[], FILE * fil
 			timer[i] = time(NULL);
 			strcpy(reply, "$OK");
 			check = 1;
-			fprintf(filePointer, "%s: Responeded to agent %i with $OK\n", asctime(mytime), sd);
+			//fprintf(filePointer, "%s: Responeded to agent %i with $OK\n", asctime(mytime), sd);
+			strcat(logging, "%s", asctime(mytime));
+			strcat(logging, ": Responded to agent ");
+			strcat(logging, "%i", sd);
+			strcat(logging, " with $OK\n");
+			fprintf(filePointer, logging);
 			break;
 		}
 	}
 	if (check == -1)
 	{
 		strcpy(reply, "$NOT MEMBER");
-		fprintf(filePointer, "%s: Responded to inactive agent %i with $NOT MEMBER\n", asctime(mytime), sd);
+		//fprintf(filePointer, "%s: Responded to inactive agent %i with $NOT MEMBER\n", asctime(mytime), sd);
+		strcat(logging, "%s", asctime(mytime));
+		strcat(logging, ": Responded to inactive agent ");
+		strcat(logging, "%i", sd);
+		strcat(logging, " with $NOT MEMBER\n");
+		fprintf(filePointer, logging);
 	}
 }
 
-int list(int sd, int AA[], char list[], clock_t time[], FILE * filePointer)
+int list(int sd, int AA[], char list[], clock_t timer[], FILE * filePointer)
 {
-	list = "";
+	strcpy(list, "");
+	char logging[100];
+	strcpy(logging, "");
 	int check = -1, temp;
 	char ipAddress[5];
 	char timeStart[5];
@@ -202,14 +241,22 @@ int list(int sd, int AA[], char list[], clock_t time[], FILE * filePointer)
 	time(&now);
 	mytime = localtime(&now);
 
-	fprintf(filePointer, "%s: Received a LIST action from agent %i\n", asctime(mytime), sd);
+	//fprintf(filePointer, "%s: Received a LIST action from agent %i\n", asctime(mytime), sd);
+	strcat(logging, "%s", asctime(mytime));
+	strcat(logging, ": Received a LIST action from agent ");
+	strcat(logging, "%i\n", sd);
+	fprintf(filePointer, logging);
 
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
 		{
 			check = 1;
-			fprintf(filePointer, "%s: Sent list to agent %i\n", asctime(mytime), sd);
+			//fprintf(filePointer, "%s: Sent list to agent %i\n", asctime(mytime), sd);
+			strcat(logging, "%s", asctime(mytime));
+			strcat(logging, ": Sent list to agent ");
+			strcat(logging, "%i\n", sd);
+			fprintf(filePointer, logging);
 			break;
 		}
 	}
@@ -220,7 +267,7 @@ int list(int sd, int AA[], char list[], clock_t time[], FILE * filePointer)
 			if (AA[i] != 0)
 			{
 				clock_t t = clock();
-				t = (double)(t - time[i]) / CLOCKS_PER_SEC;
+				t = (double)(t - timer[i]) / CLOCKS_PER_SEC;
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
 				temp = AA[i];
@@ -238,7 +285,12 @@ int list(int sd, int AA[], char list[], clock_t time[], FILE * filePointer)
 	}
 	else
 	{
-		fprintf(filePointer, "%t: No response is supplied to agent %i (agent not active)\n", asctime(mytime), sd);
+		//fprintf(filePointer, "%t: No response is supplied to agent %i (agent not active)\n", asctime(mytime), sd);
+		strcat(logging, "%s", asctime(mytime));
+		strcat(logging, ": No response is supplied to agent ");
+		strcat(logging, "%i", sd);
+		strcat(logging, " (agent not active)\n");
+		fprintf(filePointer, logging);
 	}
 	return check;
 }
@@ -250,18 +302,31 @@ int logger(int sd, int AA[], FILE * file_pointer)
 	struct tm *mytime;// = localtime(&now);
 	time(&now);
 	mytime = localtime(&now);
+	char logging[100];
+	strcpy(logging, "");
 
 	for (int i = 0; i < 5; i++)
 	{
 		if (AA[i] == sd)
 		{
 			check = 1;
-			fprintf(filePointer, "%t: Sent Log to agent %i\n", asctime(mytime), AA[i]);
+			//fprintf(filePointer, "%t: Sent Log to agent %i\n", asctime(mytime), AA[i]);
+			strcat(logging, "%s", asctime(mytime));
+			strcat(logging, ": Sent Log to agent ");
+			strcat(logging, "%i\n", sd);
+			fprintf(filePointer, logging);
 			break;
 		}
 	}
-	if(check == -1)
-		fprintf(filePointer, "%t: No response is supplied to agent %i (agent not active)\n", asctime(mytime), sd);
+	if (check == -1)
+	{
+		strcat(logging, "%s", asctime(mytime));
+		strcat(logging, ": No reponse is supplied to agent ");
+		strcat(logging, "%i", sd);
+		strcat(logging, " (agent not active)\n");
+		fprintf(filePointer, logging);
+	}
+		//fprintf(filePointer, "%t: No response is supplied to agent %i (agent not active)\n", asctime(mytime), sd);
 	return check;
 }
 
@@ -270,13 +335,19 @@ void sendLog(int sd, FILE * filePointer)
 	int size = 1000;
 	char buff[size];
 	int actuallyRead;
+	char logging[100];
+	strcpy(logging, "");
 
 	time_t now;
 	struct tm *mytime;// = localtime(&now);
 	time(&now);
 	mytime = localtime(&now);
 
-	fprintf(filePointer, "%t: Sending Log to agent %i\n", asctime(mytime), sd);
+	//fprintf(filePointer, "%t: Sending Log to agent %i\n", asctime(mytime), sd);
+	strcat(logging, "%s", asctime(mytime));
+	strcat(logging, ": Sending Log to agent ");
+	strcat(logging, "%i\n", sd);
+	fprintf(filePointer, logging);
 
 	char *fsName = "./log.txt"; //opening file for read
 	FILE *fs = fopen(fsName, "r");
