@@ -73,14 +73,18 @@ int main(int argc, char *argv[])
 		 if (n < 0)
 			 error("ERROR reading from socket");
 
-		 if ((strcmp(buffer, "JOIN")) == 0)
+		 if ((strcmp(buffer, "JOIN")) == 0){
 			 intSwitchValue = 1;
-		 else if ((strcmp(buffer, "LEAVE")) == 0)
+		 }
+		 else if ((strcmp(buffer, "LEAVE")) == 0){
 			 intSwitchValue = 2;
-		 else if ((strcmp(buffer, "LIST")) == 0)
+		 }
+		 else if ((strcmp(buffer, "LIST")) == 0) {
 			 intSwitchValue = 3;
-		 else if ((strcmp(buffer, "LOG")) == 0)
+		 }
+		 else if ((strcmp(buffer, "LOG")) == 0) {
 			 intSwitchValue = 4;
+		 }
 
 		 switch (intSwitchValue)
 		 {
