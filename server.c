@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	 char reply[16];
 	 FILE *file_pointer;
 	 file_pointer = fopen("log.txt", "w");
-	 int check1, check2, intSwitchValue = 1;
+	 int check1, check2, intSwitchValue = -1;
 	 clock_t time[5];
 	 char listReturn[500];
 
@@ -70,13 +70,13 @@ int main(int argc, char *argv[])
      if (n < 0) 
 	     error("ERROR reading from socket");
 
-	 if (strcmp(buffer, "#JOIN"))
+	 if (strcmp(buffer, "JOIN"))
 		 intSwitchValue = 1;
-	 else if (strcmp(buffer, "#LEAVE"))
+	 else if (strcmp(buffer, "LEAVE"))
 		 intSwitchValue = 2;
-	 else if (strcmp(buffer, "#LIST"))
+	 else if (strcmp(buffer, "LIST"))
 		 intSwitchValue = 3;
-	 else if (strcmp(buffer, "#LOG"))
+	 else if (strcmp(buffer, "LOG"))
 		 intSwitchValue = 4;
 
      switch(intSwitchValue)
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 		     break;
      }
      //printf("Here is the message: %s\n",buffer);
-     n = write(newsockfd,"I got your message",18);
+     //n = write(newsockfd,"I got your message",18);
      if (n < 0) error("ERROR writing to socket");
      close(newsockfd);
      close(sockfd);
