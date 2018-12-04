@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
 
 		 bzero(buffer, 256);
 		 intSwitchValue = -1;
+		 strcpy(reply, "");
 		 //reads message from the client
 		 n = read(newsockfd, buffer, 100);
 		 if (n < 0)
