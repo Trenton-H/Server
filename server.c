@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 			 (struct sockaddr *) &cli_addr,
 			 &clilen);
 		if (newsockfd < 0) {
-			printf("%s \n\n", newsockfd);
+			printf("%d \n\n", newsockfd);
 			error("ERROR on accept");
 			
 		}
@@ -118,9 +118,11 @@ int main(int argc, char *argv[])
 		 //printf("Here is the message: %s\n",buffer);
 		 //n = write(newsockfd,"I got your message",18);
 		 if (n < 0) error("ERROR writing to socket");
-		 close(newsockfd);
-		 close(sockfd);
+		 
+		 
 	 }
+	close(newsockfd);
+	close(sockfd);
      return 0; 
 }
 
