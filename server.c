@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
 
 	 clilen = sizeof(cli_addr);
 
+	 //puts server in loop to catch all messages sent to it through socket
 	 while ((newsockfd = accept(sockfd,(struct sockaddr *) &cli_addr, &clilen)) >= 0)
 	 {
 		if (newsockfd < 0) {
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
 		}
 
 		 bzero(buffer, 256);
+		 intSwitchValue = -1;
 		 //reads message from the client
 		 n = read(newsockfd, buffer, 100);
 		 if (n < 0)
