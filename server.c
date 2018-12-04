@@ -134,7 +134,7 @@ void join(int sd, int AA[], clock_t timer[], char reply[], FILE * filePointer)
 	strcat(logging, ": Received a JOIN action from agent ");
 	strcat(logging, "%i\n", sd);
 	fprintf(filePointer, logging);*/
-	fprintf(filePointer, "This shows an agent tried to join this server (showing log.txt works)")
+	fprintf(filePointer, "This shows an agent tried to join this server (showing log.txt works)\n");
 	for(int i =0; i < 5; i++)
 	{
 		if(AA[i] == sd)
@@ -157,7 +157,7 @@ void join(int sd, int AA[], clock_t timer[], char reply[], FILE * filePointer)
 			if(AA[i] == 0)
 			{
 				AA[i] = sd;
-				timer[i] = clock();
+				timer[i] = mytime;
 				//fprintf(filePointer, "%s: Added agent %i to active list\n", asctime(mytime), sd);
 				/*strcat(logging, "%s", asctime(mytime));
 				strcat(logging, ": Added agent ");
@@ -263,7 +263,7 @@ int list(int sd, int AA[], char list[], clock_t timer[], FILE * filePointer)
 				t = (double)(t - timer[i]) / CLOCKS_PER_SEC;
 				//list = stradd(lists, "<" + AA[i] + ", " + t + ">\n");
 				//list = stradd("<%s, %s>", AA[i], t);
-				temp = AA[i];
+				temp = sd;
 				//itoa(temp, ipAddress, 10);
 				snprintf(ipAddress, 10, "%d", temp);
 				//itoa(t, timeStart, 60);
