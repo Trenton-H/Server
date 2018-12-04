@@ -15,12 +15,6 @@ void error(const char *msg)
     exit(1);
 }
 
-struct lists
-{
-	int fd;
-	time_t active;
-};
-
 void join(int , int [], clock_t[], char [], FILE*);
 void leaveConnection(int, int[], char[], clock_t [], FILE*);
 int list(int, int [], char [], clock_t[], FILE*);
@@ -90,8 +84,6 @@ int main(int argc, char *argv[])
 			 intSwitchValue = 4;
 		 }
 
-		 printf("%i \n\n", intSwitchValue);
-
 		 switch (intSwitchValue)
 		 {
 		 case 1:
@@ -142,6 +134,7 @@ void join(int sd, int AA[], clock_t timer[], char reply[], FILE * filePointer)
 	strcat(logging, ": Received a JOIN action from agent ");
 	strcat(logging, "%i\n", sd);
 	fprintf(filePointer, logging);*/
+	fprintf(filePointer, "This shows an agent tried to join this server (showing log.txt works)")
 	for(int i =0; i < 5; i++)
 	{
 		if(AA[i] == sd)
